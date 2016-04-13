@@ -21,7 +21,7 @@ S = [(xx(:)*8-4) (yy(:)*8-4) corrMap(:)];
 S = flipud(sortrows(S,3));
 
 % Non-Maxima Suppression
-d = 128;
+d = 128; % for curPtBorder + otherPtBorder
 res = zeros(ndet,3);
 display(sprintf('Size of S = (%d, %d)', size(S,1), size(S,2)));
 for i = 1:ndet
@@ -31,6 +31,7 @@ for i = 1:ndet
     res(i,:) = S(1,:); %keep the top one
     curX = S(1,1);
     curY = S(1,2);
+    
     minX = curX - d;
     maxX = curX + d;
     minY = curY - d;

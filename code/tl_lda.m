@@ -19,7 +19,7 @@ end
 % Calculate the covariance matrix
 T_hat = mean(T,2);
 Tc = T - (T_hat * ones(1,m));
-Sigma = (1/m) * (Tc * Tc') - lambda*eye(n);
+Sigma = ((Tc * Tc')*(1/m)) + lambda*eye(n);
 
 % Calculate the final template
 Tpn = tl_pos_neg(template_images_pos, template_images_neg);

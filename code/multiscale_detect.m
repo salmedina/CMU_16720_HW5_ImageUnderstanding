@@ -12,10 +12,10 @@ function [x, y, score, scale] = multiscale_detect(I, template, ndet, pyramid_rat
 
 allS=[];
 curScale=1;
-while(size(I,1) > 16)
+while(size(I,1) > 128)
     display(sprintf('Calculating for scale %0.5f   imSz (%d, %d)',curScale, size(I,1), size(I,2)));
     [x,y,s] = detect(I, template, ndet);
-    curS = [x y s ones(size(x,1),1)*curScale];
+    curS = [round(x/curScale) round(y/curScale) s ones(size(x,1),1)*curScale];
     allS = [allS; curS];
     curScale = curScale * pyramid_ratio;
     I = imresize(I, curScale);
@@ -34,19 +34,19 @@ for i = 1:ndet
         break;
     end
     res(i,:) = allS(1,:); %keep the top one
-    curX = allS(1,1);%/ allS(1,4);%apply ratio
-    curY = allS(1,2);%/ allS(1,4);%apply ratio
+    curX = allS(1,1);
+    curY = allS(1,2);
     curD = d*allS(1,4);
-    leftX = curX - d*curScale;
-    rightX = curX + d*curScale;
-    bottomY = curY - d*curScale;
-    topY = curY + d;
+    leftX = curX - d/curScale;
+    rightX = curX + d/curScale;
+    bottomY = curY - d/curScale;
+    topY = curY + d/curScale;
     sSz = size(allS,1)
     keep = zeros(sSz,1);
     for j = 1:sSz
         tmpX = allS(j,1);%/ allS(1,4);%apply ratio
         tmpY = allS(j,2);%/ allS(1,4);%apply ratio
-        tmpD = d * allS(j,4);
+        tmpD = d / allS(j,4);
         keep(j) = tmpX < (leftX-tmpD) | ...
                   tmpX > (rightX+tmpD) | ...
                   tmpY < (bottomY-tmpD) | ...
