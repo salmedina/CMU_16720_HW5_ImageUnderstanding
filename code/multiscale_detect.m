@@ -9,53 +9,62 @@ function [x, y, score, scale] = multiscale_detect(I, template, ndet, pyramid_rat
 %                column one is the x coordinate
 %                column two is the y coordinate
 %                column three is the scale, i.e. 1, 0.7 or 0.49 ..
-filter_size =128;
+
+filter_size=128;
 allS=[];
 curScale=1;
-while(size(I,1)>filter_size)
-    featMap = hog(I);
+while(size(I,1) > filter_size)
+    % scale image accordingly
+    scaledI = imresize(I, curScale);
+    % obtain correlation map
+    featMap = hog(scaledI);
     [m,n,k] = size(featMap);
     corrMap = zeros(m,n);
     for i = 1:k
         corrMap = corrMap + imfilter(featMap(:,:,i),template(:,:,i));
     end
+    % get score matrix
     [xx, yy] = meshgrid(1:n, 1:m);
-    S = [(xx(:).*8-4)/curScale (yy(:).*8-4)/curScale corrMap(:)];
-    S = [S ones(size(S,1),1)*curScale];
-    allS=[allS; S];
-    I = imresize(I, pyramid_ratio);
-    curScale=curScale*pyramid_ratio
+    curS = [(xx(:)*8-4)/curScale (yy(:)*8-4)/curScale corrMap(:)];
+    curS = [curS ones(size(curS,1),1)*curScale]; % append scale to res mtx
+    % append cur
+    allS=[allS; curS];
+    curScale = curScale * pyramid_ratio;
 end
 
 % sort by score
 allS = flipud(sortrows(allS,3));
 
 % Non-Maxima Suppression
-d = 128;
 res = zeros(ndet,4);
-
+d = 64
 for i = 1:ndet
     res(i,:) = allS(1,:); %keep the top one
     curX = allS(1,1);%/ allS(1,4);%apply ratio
     curY = allS(1,2);%/ allS(1,4);%apply ratio
-    minX = curX - d;
-    maxX = curX + d;
-    minY = curY - d;
-    maxY = curY + d;
+    curD = d*allS(1,4);
+    leftX = curX - d*curScale;
+    rightX = curX + d*curScale;
+    bottomY = curY - d*curScale;
+    topY = curY + d;
     sSz = size(allS,1)
     keep = zeros(sSz,1);
     for j = 1:sSz
         tmpX = allS(j,1);%/ allS(1,4);%apply ratio
         tmpY = allS(j,2);%/ allS(1,4);%apply ratio
-        keep(j) = tmpX < minX | tmpX > maxX | tmpY < minY | tmpY > maxY;
+        tmpD = d * allS(j,4);
+        keep(j) = tmpX < (leftX-tmpD) | ...
+                  tmpX > (rightX+tmpD) | ...
+                  tmpY < (bottomY-tmpD) | ...
+                  tmpY > (topY+tmpD);
     end
     allS = allS(find(keep), :);
 end
 
-x = res(1:ndet,1);
-y = res(1:ndet,2);
-score = allS(1:ndet,3);
-scale =allS(1:ndet,4);
+x = res(:,1);
+y = res(:,2);
+score = allS(:,3);
+scale =allS(:,4);
 
 end
 
