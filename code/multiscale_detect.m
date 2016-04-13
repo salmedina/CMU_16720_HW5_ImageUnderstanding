@@ -10,25 +10,15 @@ function [x, y, score, scale] = multiscale_detect(I, template, ndet, pyramid_rat
 %                column two is the y coordinate
 %                column three is the scale, i.e. 1, 0.7 or 0.49 ..
 
-filter_size=128;
 allS=[];
 curScale=1;
-while(size(I,1) > filter_size)
+while(size(I,1) > 128)
+    display(sprintf('Calculating for scale %0.5f',curScale));    
     % scale image accordingly
     scaledI = imresize(I, curScale);
-    % obtain correlation map
-    featMap = hog(scaledI);
-    [m,n,k] = size(featMap);
-    corrMap = zeros(m,n);
-    for i = 1:k
-        corrMap = corrMap + imfilter(featMap(:,:,i),template(:,:,i));
-    end
-    % get score matrix
-    [xx, yy] = meshgrid(1:n, 1:m);
-    curS = [(xx(:)*8-4)/curScale (yy(:)*8-4)/curScale corrMap(:)];
-    curS = [curS ones(size(curS,1),1)*curScale]; % append scale to res mtx
-    % append cur
-    allS=[allS; curS];
+    display(size(scaledI)); %PRINT image size
+    curS = detect(I, template, ndet);
+    allS=[allS; curS(1:min(100,size(curS,1)),:)];
     curScale = curScale * pyramid_ratio;
 end
 
@@ -36,8 +26,9 @@ end
 allS = flipud(sortrows(allS,3));
 
 % Non-Maxima Suppression
+display('Removing overlap by Non-Maxima Supression');
 res = zeros(ndet,4);
-d = 64
+d = 64;
 for i = 1:ndet
     res(i,:) = allS(1,:); %keep the top one
     curX = allS(1,1);%/ allS(1,4);%apply ratio

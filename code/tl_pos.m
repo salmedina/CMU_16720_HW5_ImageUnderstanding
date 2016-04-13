@@ -4,7 +4,7 @@ function template = tl_pos(template_images_pos)
 % output:
 %     template - [16 x 16 x 9] matrix
 
-nTpl = length(template_images_pos)
+nTpl = length(template_images_pos);
 v = template_images_pos{1}(:);
 for i = 2:nTpl
     v = v + template_images_pos{i}(:);
