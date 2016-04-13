@@ -27,13 +27,15 @@ end
 
 % Randomly extract patches from negative images
 numRandPerImg = numNeg / length(negImgList);
-for negImgPos = 1:size(negImgList)
+for negImgPos = 1:length(negImgList)
     tmpImg = rgb2gray(imread(negImgList{negImgPos}));
     [rows,cols] = size(tmpImg);
     randIndices = randi((rows-128)*(cols-128), 1, numRandPerImg);
     [row,col] = ind2sub([rows-128, cols-128], randIndices);
     for i = 1:numRandPerImg
-        negPatches{(negImgPos-1)*numRandPerImg + i} = imcrop(tmpImg,[row(i) col(i) row(i)+128 col(i)+128]);
+        patchIdx = (negImgPos-1)*numRandPerImg + i;
+        display(patchIdx);
+        negPatches{patchIdx} = tmpImg(row(i):row(i)+128, col(i):col(i)+128);
     end
 end
 
@@ -43,12 +45,14 @@ for i = 1:numPos
     [dimSz, dimIdx] = max(size(patch));
     scale = 128/dimSz;
     scaledPatch = imresize(patch,'scale', scale);
-    newDimSz = size(scaledPatch, dimIdx);
+    newDimSz = size(scaledPatch);
     newPatch = zeros(128,128);
     if dimIdx == 1
-        newPatch(:,64-newDimSz/2) = scaledPatch(:,:);
+        offset = 64-newDimSz(2)/2;
+        newPatch(:,offset:offset+newDimSz(2)) = scaledPatch(:,:);
     else
-        newPatch(64-newDimSz/2,:) = scaledPatch(:,:);
+        offset = 64-newDimSz(1)/2;
+        newPatch(offset:offset+newDimSz(1),:) = scaledPatch(:,:);
     end
     posPatches{i} = newPatch;
 end

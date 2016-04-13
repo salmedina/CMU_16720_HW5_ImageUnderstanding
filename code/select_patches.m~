@@ -33,7 +33,11 @@ for negImgPos = 1:size(negImgList)
     randIndices = randi((rows-128)*(cols-128), 1, numRandPerImg);
     [row,col] = ind2sub([rows-128, cols-128], randIndices);
     for i = 1:numRandPerImg
-        negPatches{(negImgPos-1)*numRandPerImg + i} = imcrop(tmpImg,[row(i),col(i),row(i)+127, col(i)+127]);
+        rowPos = row(i);
+        colPos = col(i);
+        negPatches{(negImgPos-1)*numRandPerImg + i} = tmpImg(row(i):row(i)+128, col(i):col(i)+128);
+        imshow(tmpImg(row(i):row(i)+128, col(i):col(i)+128));
+        
     end
 end
 
