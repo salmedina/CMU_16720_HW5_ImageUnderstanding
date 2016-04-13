@@ -3,30 +3,37 @@ function select_patches()
 numPos = 1;
 numNeg = 100;
 
-posImgList = {'../data/maneki-neko.jpg'}
+posImgList = {'../data/maneki-neko.jpg' ...
+              '../data/maneki-neko.jpg' ...
+              '../data/maneki-neko.jpg' ...
+              '../data/maneki-neko.jpg' ...
+              '../data/maneki-neko.jpg' };
 negImgList = {'../data/test0.jpg' ...
               '../data/test1.jpg' ...
               '../data/test2.jpg' ...
               '../data/test3.jpg' ...
-              '../data/test4.jpg'}
+              '../data/test4.jpg'};
 
 posPatches = cell(numPos);
 negPatches = cell(numNeg);
 
 % User selects all the positive patches from positive images
 for posIdx = 1:numPos
-    
+    tmpImg = rgb2gray(imread(posImgList{posIdx}));
+    imshow(tmpImg);
+    selRect = getrect();
+    posPatches{posIdx} = imcrop(tmpImg, selRect);
 end
 
 % Randomly extract patches from negative images
-numRandPerImg = numNeg / size(negImgList);
+numRandPerImg = numNeg / length(negImgList);
 for negImgPos = 1:size(negImgList)
     tmpImg = rgb2gray(imread(negImgList{negImgPos}));
-    [m,n] = size(tmpImg);
-    randIndices = randi((m-128)*(n-128), 1, numRandPerImg);
-    [x,y] = ind2sub([m-128, n-128], randIndices;
+    [rows,cols] = size(tmpImg);
+    randIndices = randi((rows-128)*(cols-128), 1, numRandPerImg);
+    [row,col] = ind2sub([rows-128, cols-128], randIndices);
     for i = 1:numRandPerImg
-        negPatches{(negImgPos-1)*numRandPerImg }
+        negPatches{(negImgPos-1)*numRandPerImg + i} = imcrop(tmpImg,[row(i),col(i),row(i)+127, col(i)+127]);
     end
 end
 

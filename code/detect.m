@@ -21,7 +21,7 @@ S = [(xx(:).*8-4) (yy(:).*8-4) corrMap(:)];
 S = flipud(sortrows(S,3));
 
 % Non-Maxima Suppression
-d = size(template,2) / 2;
+d = 128;
 res = zeros(ndet,3);
 
 for i = 1:ndet
@@ -34,10 +34,10 @@ for i = 1:ndet
     maxY = curY + d;
     sSz = size(S,1)
     keep = zeros(sSz);
-    for i = 1:sSz
-        tmpX = S(i,1);
-        tmpY = S(i,2);
-        keep(i) = tmpX < minX | tmpX > maxX | tmpY < minY | tmpY > maxY;
+    for j = 1:sSz
+        tmpX = S(j,1);
+        tmpY = S(j,2);
+        keep(j) = tmpX < minX | tmpX > maxX | tmpY < minY | tmpY > maxY;
     end
     S = S(find(keep), :);
 end
