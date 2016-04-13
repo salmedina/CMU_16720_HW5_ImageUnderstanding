@@ -38,7 +38,7 @@ Itest= im2double(rgb2gray(imread('../data/maneki-neko.jpg')));
 
 
 % find top 5 detections in Itest
-ndet = 5;
+ndet = 10;
 heatMap = calcHeatmap(Itest, template); 
 imagesc(heatMap);
 [x,y,score] = detect(Itest,template,ndet);
