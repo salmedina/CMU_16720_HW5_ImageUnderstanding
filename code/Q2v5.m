@@ -7,5 +7,5 @@ load('template_images_pos.mat')
 
 boxWidth = 128;
 template = tl_pos_neg(template_images_pos, template_images_neg);
-[x,y,score] = detect(Itest,template,15);
+[x,y,score,scale] = multiscale_detect(Itest, template, 15);
 draw_detection(Itest, x, y, boxWidth);

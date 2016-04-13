@@ -15,7 +15,7 @@ end
 
 % transform into (m*n)x3 matrix [x,y,s]
 [xx, yy] = meshgrid(1:n, 1:m);
-S = [(xx(:).*8-4) (yy(:).*8-4) corrMap(:)];
+S = [(xx(:)*8-4) (yy(:)*8-4) corrMap(:)];
 
 % sort by score
 S = flipud(sortrows(S,3));

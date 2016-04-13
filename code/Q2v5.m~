@@ -42,7 +42,7 @@ ndet = 20;
 heatMap = calcHeatmap(Itest, template); 
 imagesc(heatMap);
 %[x,y,score] = detect(Itest,template,ndet);
-[x,y,score, scale] = multiscale_detect(Itest,template,ndet, 0.7);
+[x,y,score,scale] = multiscale_detect(Itest,template,ndet, 0.7);
 
 %display top ndet detections
 figure; clf; imshow(Itest);

@@ -26,8 +26,6 @@ while(size(I,1)>filter_size)
     I = imresize(I, pyramid_ratio);
     curScale=curScale*pyramid_ratio
 end
-% transform into (m*n)x3 matrix [x,y,s]
-
 
 % sort by score
 allS = flipud(sortrows(allS,3));
