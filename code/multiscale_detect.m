@@ -14,12 +14,11 @@ allS=[];
 curScale=1;
 while(size(I,1) > 128)
     display(sprintf('Calculating for scale %0.5f',curScale));    
-    % scale image accordingly
-    scaledI = imresize(I, curScale);
-    display(size(scaledI)); %PRINT image size
+    display(size(I)); %PRINT image size
     curS = detect(I, template, ndet);
     allS=[allS; curS(1:min(100,size(curS,1)),:)];
     curScale = curScale * pyramid_ratio;
+    I = imresize(I, curScale);
 end
 
 % sort by score

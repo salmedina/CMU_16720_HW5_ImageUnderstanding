@@ -23,7 +23,7 @@ S = flipud(sortrows(S,3));
 % Non-Maxima Suppression
 d = 128;
 res = zeros(ndet,3);
-
+display(sprintf('Size of S = (%d, %d)', size(S,1), size(S,2)));
 for i = 1:ndet
     res(i,:) = S(1,:); %keep the top one
     curX = S(1,1);
