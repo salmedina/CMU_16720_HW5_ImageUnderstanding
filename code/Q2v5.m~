@@ -38,7 +38,7 @@ Itest= im2double(rgb2gray(imread('../data/maneki-neko.jpg')));
 
 
 % find top 5 detections in Itest
-ndet = 20;
+ndet = 10;
 heatMap = calcHeatmap(Itest, template); 
 imagesc(heatMap);
 %[x,y,score] = detect(Itest,template,ndet);
@@ -51,5 +51,6 @@ for i = 1:ndet
   %  top scoring are green, fading to red
   hold on; 
   h = rectangle('Position',[x(i)-64 y(i)-64 128 128],'EdgeColor',[(i/ndet) ((ndet-i)/ndet)  0],'LineWidth',3,'Curvature',[0.3 0.3]); 
+  text(x(i)-64 +10, y(i)-64+10, num2str(score(i)),'Color',[(i/ndet) ((ndet-i)/ndet)  0],'FontSize',14, 'FontWeight', 'bold');
   hold off;
 end

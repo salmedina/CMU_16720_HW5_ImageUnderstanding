@@ -20,7 +20,7 @@ while(size(I,1)>filter_size)
         corrMap = corrMap + imfilter(featMap(:,:,i),template(:,:,i));
     end
     [xx, yy] = meshgrid(1:n, 1:m);
-    S = [(xx(:).*8-4) (yy(:).*8-4) corrMap(:)];
+    S = [(xx(:).*8-4)/curScale (yy(:).*8-4)/curScale corrMap(:)];
     S = [S ones(size(S,1),1)*curScale];
     allS=[allS; S];
     I = imresize(I, pyramid_ratio);
@@ -55,7 +55,7 @@ end
 x = res(1:ndet,1);
 y = res(1:ndet,2);
 score = allS(1:ndet,3);
-scale =curScale;
+scale =allS(1:ndet,4);
 
 end
 
