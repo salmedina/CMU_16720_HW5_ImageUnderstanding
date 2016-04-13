@@ -1,4 +1,4 @@
-function [x,y,score] = detection(I,template,ndet)
+function [x,y,score] = detect(I,template,ndet)
 %
 % return top ndet detections found by applying template to the given image.
 %   x,y should contain the coordinates of the detections in the image
@@ -25,6 +25,9 @@ d = 128;
 res = zeros(ndet,3);
 display(sprintf('Size of S = (%d, %d)', size(S,1), size(S,2)));
 for i = 1:ndet
+    if size(S,1) < 1
+        break;
+    end
     res(i,:) = S(1,:); %keep the top one
     curX = S(1,1);
     curY = S(1,2);
@@ -44,7 +47,7 @@ end
 
 x = res(1:ndet,1);
 y = res(1:ndet,2);
-score = S(1:ndet,3);
+score = res(1:ndet,3);
 
 end
 

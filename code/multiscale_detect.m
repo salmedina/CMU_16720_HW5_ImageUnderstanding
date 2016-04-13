@@ -12,15 +12,16 @@ function [x, y, score, scale] = multiscale_detect(I, template, ndet, pyramid_rat
 
 allS=[];
 curScale=1;
-while(size(I,1) > 128)
-    display(sprintf('Calculating for scale %0.5f',curScale));    
-    display(size(I)); %PRINT image size
-    curS = detect(I, template, ndet);
-    allS=[allS; curS(1:min(100,size(curS,1)),:)];
+while(size(I,1) > 16)
+    display(sprintf('Calculating for scale %0.5f   imSz (%d, %d)',curScale, size(I,1), size(I,2)));
+    [x,y,s] = detect(I, template, ndet);
+    curS = [x y s ones(size(x,1),1)*curScale];
+    allS = [allS; curS];
     curScale = curScale * pyramid_ratio;
     I = imresize(I, curScale);
 end
 
+display('Finished with pyramid');
 % sort by score
 allS = flipud(sortrows(allS,3));
 
@@ -29,6 +30,9 @@ display('Removing overlap by Non-Maxima Supression');
 res = zeros(ndet,4);
 d = 64;
 for i = 1:ndet
+    if size(allS, 1) < 1
+        break;
+    end
     res(i,:) = allS(1,:); %keep the top one
     curX = allS(1,1);%/ allS(1,4);%apply ratio
     curY = allS(1,2);%/ allS(1,4);%apply ratio
@@ -53,8 +57,8 @@ end
 
 x = res(:,1);
 y = res(:,2);
-score = allS(:,3);
-scale =allS(:,4);
+score = res(:,3);
+scale = res(:,4);
 
 end
 

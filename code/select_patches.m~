@@ -3,11 +3,11 @@ function select_patches()
 numPos = 5;
 numNeg = 100;
 
-posImgList = {'../res/maneki-1.jpg' ...
-              '../res/maneki-2.jpg' ...
-              '../res/maneki-3.jpg' ...
-              '../res/maneki-4.png' ...
-              '../res/maneki-5.jpg' };
+posImgList = {'../res/maneki-neko.jpg' ...
+              '../res/maneki-neko.jpg' ...
+              '../res/maneki-neko.jpg' ...
+              '../res/maneki-neko.jpg' ...
+              '../res/maneki-neko.jpg' };
 negImgList = {'../data/test0.jpg' ...
               '../data/test1.jpg' ...
               '../data/test2.jpg' ...
@@ -23,7 +23,14 @@ for posIdx = 1:numPos
     imshow(tmpImg);
     selRect = getrect();
     posPatches{posIdx} = imcrop(tmpImg, selRect);
+    patchFilePath = fullfile('..','data',sprintf('pos_patch_%d.png',posIdx))
+    imwrite(posPatches{posIdx}, patchFilePath);
 end
+
+patchFolder = fullfile('..', 'data');
+dirOutput = dir(fullfile(fileFolder,'pos_patch_*.png'));
+fileNames
+motage(posPatches)
 
 % Randomly extract patches from negative images
 numRandPerImg = numNeg / length(negImgList);
@@ -53,13 +60,7 @@ for i = 1:numPos
     scaledPatch = imresize(patch,[128 128]);
     
     posPatches{i} = scaledPatch;
-    patchFilePath = fullfile('..','data',sprintf('pos_patch_%d.png',i))
-    imwrite(posPatches{i}, patchFilePath);
 end
-
-patchFolder = fullfile('..', 'data');
-dirOutput = dir(fullfile(patchFolder,'pos_patch_*.png'));
-montage(fullfile(patchFolder,{dirOutput.name}'), 'Size', [1 numPos]);
 
 % Extract HoG from ...
 % Positive patches
