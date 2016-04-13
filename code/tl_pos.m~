@@ -4,12 +4,11 @@ function template = tl_pos(template_images_pos)
 % output:
 %     template - [16 x 16 x 9] matrix
 
-nTpl = length(template_images_pos)
-v = template_images_pos{1}(:);
-for i = 2:nTpl
-    v = v + template_images_pos{i}(:);
+nTpl = numele(template_images_pos)
+
+for i = 1:nTpl
+    
 end
-v = v ./ nTpl;
-template = reshape(v, 16, 16, 9);
+template = reshape(mean(T,2), 16, 16, 9);
 
 end

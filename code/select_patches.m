@@ -1,13 +1,13 @@
 function select_patches()
 
-numPos = 1;
+numPos = 5;
 numNeg = 100;
 
-posImgList = {'../data/maneki-neko.jpg' ...
-              '../data/maneki-neko.jpg' ...
-              '../data/maneki-neko.jpg' ...
-              '../data/maneki-neko.jpg' ...
-              '../data/maneki-neko.jpg' };
+posImgList = {'../res/maneki-neko.jpg' ...
+              '../res/maneki-neko.jpg' ...
+              '../res/maneki-neko.jpg' ...
+              '../res/maneki-neko.jpg' ...
+              '../res/maneki-neko.jpg' };
 negImgList = {'../data/test0.jpg' ...
               '../data/test1.jpg' ...
               '../data/test2.jpg' ...
@@ -34,7 +34,6 @@ for negImgPos = 1:length(negImgList)
     [row,col] = ind2sub([rows-128, cols-128], randIndices);
     for i = 1:numRandPerImg
         patchIdx = (negImgPos-1)*numRandPerImg + i;
-        display(patchIdx);
         negPatches{patchIdx} = tmpImg(row(i):row(i)+128, col(i):col(i)+128);
     end
 end
@@ -42,19 +41,18 @@ end
 % Resize positive examples to 128x128
 for i = 1:numPos
     patch = posPatches{i};
-    [dimSz, dimIdx] = max(size(patch));
-    scale = 128/dimSz;
-    scaledPatch = imresize(patch,'scale', scale);
-    newDimSz = size(scaledPatch);
-    newPatch = zeros(128,128);
-    if dimIdx == 1
-        offset = 64-newDimSz(2)/2;
-        newPatch(:,offset:offset+newDimSz(2)) = scaledPatch(:,:);
+    [maxDimSz, maxDimIdx] = max(size(patch));
+    [minDimSz, minDimIdx] = min(size(patch));
+    padSz = floor((maxDimSz-minDimSz)/2);
+    if maxDimIdx == 1
+        padding = [0 padSz];
     else
-        offset = 64-newDimSz(1)/2;
-        newPatch(offset:offset+newDimSz(1),:) = scaledPatch(:,:);
+        padding = [padSz 0];
     end
-    posPatches{i} = newPatch;
+    patch = padarray(patch, padding);
+    scaledPatch = imresize(patch,[128 128]);
+    
+    posPatches{i} = scaledPatch;
 end
 
 % Extract HoG from ...
@@ -73,5 +71,6 @@ end
 save('template_images_pos.mat','template_images_pos')
 save('template_images_neg.mat','template_images_neg')
 
+display('Finished template processing');
 end
 

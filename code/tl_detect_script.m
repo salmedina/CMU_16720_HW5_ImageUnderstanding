@@ -3,9 +3,10 @@ function tl_detect_script
 load('template_images_pos.mat');
 load('template_images_neg.mat');
 
+boxWidth = 128;
 template = tl_pos(template_images_pos);
 [x,y,score] = detect(Itest,template,ndet);
-draw_detection();
+draw_detection(x, y, boxWidth);
 
 template = tl_pos_neg(template_images_pos, template_images_neg);
 [x,y,score] = detect(Itest,template,ndet);

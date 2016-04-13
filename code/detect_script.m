@@ -1,5 +1,5 @@
 % load a training example image
-Itrain = im2double(rgb2gray(imread('../data/maneki-neko.jpg')));
+Itrain = im2double(rgb2gray(imread('../res/maneki-neko.jpg')));
 
 %have the user click on some training examples.  
 % If there is more than 1 example in the training image (e.g. faces), you could set nclicks higher here and average together
@@ -34,11 +34,10 @@ template = template/nclick;
 % load a test image
 %
 %%
-Itest= im2double(rgb2gray(imread('../data/maneki-neko.jpg')));
-
+Itest= im2double(rgb2gray(imread('../res/maneki-neko.jpg')));
 
 % find top 5 detections in Itest
-ndet = 10;
+ndet = 5;
 heatMap = calcHeatmap(Itest, template); 
 imagesc(heatMap);
 [x,y,score] = detect(Itest,template,ndet);
